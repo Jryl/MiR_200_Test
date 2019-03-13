@@ -59,7 +59,6 @@ def _prepend_tf_prefix_dict_filter(msg_dict):
             try:
                 # prepend frame_id
                 frame_id = value['frame_id'].strip('/')
-                #value['frame_id'] = frame_id
                 if (frame_id != 'map'):
                     # prepend tf_prefix, then remove leading '/' (e.g., when tf_prefix is empty)
                     value['frame_id'] = (tf_prefix + '/' + frame_id).strip('/')
@@ -135,7 +134,7 @@ PUB_TOPICS = [
               TopicConfig('laser_front/driver/parameter_updates', Config),
               TopicConfig('laser_front/transform/parameter_descriptions', ConfigDescription),
               TopicConfig('laser_front/transform/parameter_updates', Config),
-              #TopicConfig('map', OccupancyGrid, latch=True), ### <--import the map from the mir software-->
+              TopicConfig('map', OccupancyGrid, latch=True),
               TopicConfig('map_metadata', MapMetaData),
               TopicConfig('mir_amcl/parameter_descriptions', ConfigDescription),
               TopicConfig('mir_amcl/parameter_updates', Config),
@@ -180,7 +179,7 @@ PUB_TOPICS = [
 #              TopicConfig('move_base_node/mir_escape_recovery/visualization_marker', Marker),
 #              TopicConfig('move_base_node/parameter_descriptions', ConfigDescription),
 #              TopicConfig('move_base_node/parameter_updates', Config),
-              TopicConfig('odom', Odometry),    # odom on real robot, odom on simulator
+              TopicConfig('odom_comb', Odometry),    # odom_comb on real robot, odom on simulator
               TopicConfig('odom_enc', Odometry),
               TopicConfig('particlecloud', PoseArray),
               TopicConfig('relative_move_action/feedback', RelativeMoveActionFeedback),
@@ -269,7 +268,7 @@ class SubscriberWrapper(object):
             msg_dict = self.topic_config.dict_filter(msg_dict)
         self.robot.publish('/' + self.topic_config.topic, msg_dict)
 
-class MiR200Bridge(object):
+class MiR100Bridge(object):
     def __init__(self):
         try:
             hostname = rospy.get_param('~hostname')
@@ -345,7 +344,7 @@ class MiR200Bridge(object):
 
 def main():
     rospy.init_node('mir_bridge')
-    MiR200Bridge()
+    MiR100Bridge()
     rospy.spin()
 
 if __name__ == '__main__':
